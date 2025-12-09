@@ -4,12 +4,15 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-api_key = os.getenv("OPENAI_API_KEY")
-client = OpenAI(api_key=api_key) if api_key else None
+api_key = os.getenv("XAI_API_KEY")
+client = OpenAI(
+    api_key=api_key,
+    base_url="https://api.x.ai/v1"
+) if api_key else None
 
 def generate_financial_advice(financial_data: dict, risk_zone: str) -> str:
     if not client:
-        return "AI Advice unavailable (Server running in offline mode due to missing API Key). Please set OPENAI_API_KEY."
+        return "AI Advice unavailable (Server running in offline mode due to missing API Key). Please set XAI_API_KEY."
 
     prompt = f"""
     You are a financial advisor for Indian middle-class families. 
@@ -29,7 +32,7 @@ def generate_financial_advice(financial_data: dict, risk_zone: str) -> str:
     
     try:
         response = client.chat.completions.create(
-            model="gpt-3.5-turbo",
+            model="grok-beta",
             messages=[
                 {"role": "system", "content": "You are a helpful financial advisor for Indians."},
                 {"role": "user", "content": prompt}
